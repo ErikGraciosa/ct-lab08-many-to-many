@@ -15,15 +15,45 @@ describe('movies routes', () => {
 //   });
 
   it('create a new movie via POST', async() => {
+    
+    await Promise.all([
+        {
+            first_name: 'Chris',
+            last_name: 'Hemsworth'
+        },
+        {
+            first_name: 'Robert',
+            last_name: 'Downey'
+        },
+        {
+            first_name: 'Scarlett',
+            last_name: 'Johansson'
+        }   
+    ].map(actor => Actor.insert(actor)));
+    
     const response = await request(app)
         .post('/api/v1/movies')
         .send({
-            title: 'The Big Lebowski'
+            title: 'Avengers',
+            actors: [
+                {
+                    first_name: 'Chris',
+                    last_name: 'Hemsworth'
+                },
+                {
+                    first_name: 'Robert',
+                    last_name: 'Downey'
+                },
+                {
+                    first_name: 'Scarlett',
+                    last_name: 'Johansson'
+                }   
+            ]
         });
 
     expect(response.body).toEqual({
       id: '1',
-      title: 'The Big Lebowski'
+      title: 'Avengers'
     });
   });
 
@@ -52,14 +82,14 @@ describe('actors routes', () => {
       const response = await request(app)
         .post('/api/v1/actors')
         .send({
-          first_name: 'Jeff',
-          last_name: 'Bridges'
+            first_name: 'Chris',
+            last_name: 'Hemsworth'
         });
   
       expect(response.body).toEqual({
         id: '1',
-        first_name: 'Jeff',
-        last_name: 'Bridges'
+        first_name: 'Chris',
+        last_name: 'Hemsworth'
       });
     });
   
