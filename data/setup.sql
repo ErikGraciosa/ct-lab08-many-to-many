@@ -9,8 +9,7 @@ CREATE TABLE movies (
 
 CREATE TABLE actors (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    first_name TEXT NOT NULL,
-    last_name TEXT NOT NULL
+    name TEXT NOT NULL
 );
 
 CREATE TABLE actors_movies (
@@ -27,10 +26,10 @@ CREATE TABLE actors_movies (
 -- INSERT INTO movies (title) VALUES ('Captain America');
 -- INSERT INTO movies (title) VALUES ('Iron Man');
 
--- INSERT INTO actors (first_name, last_name) VALUES ('Chris', 'Hemsworth');
--- INSERT INTO actors (first_name, last_name) VALUES ('Robert', 'Downey');
--- INSERT INTO actors (first_name, last_name) VALUES ('Scarlett', 'Johansson');
--- INSERT INTO actors (first_name, last_name) VALUES ('Chris', 'Evans');
+-- INSERT INTO actors (name) VALUES ('Chris Hemsworth');
+-- INSERT INTO actors (name) VALUES ('Robert Downey');
+-- INSERT INTO actors (name) VALUES ('Scarlett Johansson');
+-- INSERT INTO actors (name) VALUES ('Chris Evans');
 
 
 

@@ -10,43 +10,24 @@ describe('movies routes', () => {
     return pool.query(fs.readFileSync('./data/setup.sql', 'utf-8'));
   });
 
-//   afterAll(() => {
-//     return pool.end();
-//   });
+  // afterAll(() => {
+  //   return pool.end();
+  // });
 
-  it('create a new movie via POST', async() => {
-    
-    await Promise.all([
-        {
-            first_name: 'Chris',
-            last_name: 'Hemsworth'
-        },
-        {
-            first_name: 'Robert',
-            last_name: 'Downey'
-        },
-        {
-            first_name: 'Scarlett',
-            last_name: 'Johansson'
-        }   
-    ].map(actor => Actor.insert(actor)));
-    
+  it('create a new movie via POST', async() => {   
     const response = await request(app)
         .post('/api/v1/movies')
         .send({
             title: 'Avengers',
             actors: [
                 {
-                    first_name: 'Chris',
-                    last_name: 'Hemsworth'
+                  name: 'Chris Hemsworth'
                 },
                 {
-                    first_name: 'Robert',
-                    last_name: 'Downey'
+                  name: 'Robert Downey'
                 },
                 {
-                    first_name: 'Scarlett',
-                    last_name: 'Johansson'
+                  name: 'Scarlett Johansson'
                 }   
             ]
         });
@@ -66,42 +47,36 @@ describe('movies routes', () => {
 
   //delete
 
-});
 
-
-describe('actors routes', () => {
-    beforeEach(() => {
-      return pool.query(fs.readFileSync('./data/setup.sql', 'utf-8'));
-    });
-  
-    afterAll(() => {
-      return pool.end();
-    });
-  
-    it('create a new actor via POST', async() => {
-      const response = await request(app)
-        .post('/api/v1/actors')
-        .send({
-            first_name: 'Chris',
-            last_name: 'Hemsworth'
-        });
-  
-      expect(response.body).toEqual({
-        id: '1',
-        first_name: 'Chris',
-        last_name: 'Hemsworth'
+  //ACTORS TESTS 
+  it.skip('create a new actor via POST', async() => {
+    const response = await request(app)
+      .post('/api/v1/actors')
+      .send({
+          name: 'Chris Hemsworth'
       });
+
+    expect(response.body).toEqual({
+      id: '1',
+      name: 'Chris Hemsworth'
     });
-  
-    //get 
-  
-    //get by id
-  
-    //put
-  
-    //delete
-  
-  
-  
-  
+  });
+
+  //get 
+
+  //get by id
+
+  //put
+
+  //delete
+
+
 });
+
+
+
+  
+    
+  
+  
+  
