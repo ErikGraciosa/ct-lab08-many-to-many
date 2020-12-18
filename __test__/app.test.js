@@ -27,7 +27,6 @@ describe('movies routes', () => {
     });
   });
 
-  //get by id
   it('MOVIE: finds a movie by id via GET', async() => {
     await Promise.all([	
       {	name: 'Chris Hemsworth' },	
@@ -57,9 +56,6 @@ describe('movies routes', () => {
     });
   });
 
-
-
-  //get all
   it('MOVIE: finds all movies byGET', async() => {
     await Promise.all([	
       {	title: 'Avengers' },	
@@ -85,7 +81,7 @@ describe('movies routes', () => {
       }   	
     ]));
   });
-  //put
+  
   it('MOVIE: create a new movie via POST', async() => {   
     await Promise.all([	
       {	title: 'Avengers' }  	
@@ -103,11 +99,24 @@ describe('movies routes', () => {
     });
   });
 
+  it('MOVIE: create a new movie via POST', async() => {   
+    await Promise.all([	
+      {	title: 'Avengers' },
+      { title: 'Guardians of the Galaxy' }  	
+    ].map(title => Movie.insert(title)));
 
-  //delete
+    const response = await request(app)
+        .delete('/api/v1/movies/1')
+        .send({
+            title: 'The Incredible Hulk'
+        });
 
+    expect(response.body).toEqual({
+      id: '1',
+      title: expect.anything()
+    });
+  });
 
-  //ACTORS TESTS 
   it('ACTOR: create a new actor via POST', async() => {
     const response = await request(app)
       .post('/api/v1/actors')
