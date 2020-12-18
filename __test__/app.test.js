@@ -27,8 +27,37 @@ describe('movies routes', () => {
     });
   });
 
-  
   //get 
+  it('finds a movie by id via GET', async() => {
+    await Promise.all([	
+      {	name: 'Chris Hemsworth' },	
+      {	name: 'Robert Downey Jr' },	
+      {	name: 'Scarlett Johansson'}   	
+    ].map(actor => Actor.insert(actor)));
+
+    const movie = await Movie.insert({
+      title: 'Avengers',
+      actors: [	
+        'Chris Hemsworth',	
+        'Robert Downey Jr',	
+        'Scarlett Johansson'   
+      ]
+    });
+
+    const response = await request(app)
+      .get(`/api/v1/movies/1`);
+    
+    expect(response.body).toEqual({
+      ...movie,
+      actors: [	
+        'Chris Hemsworth',	
+        'Robert Downey Jr',	
+        'Scarlett Johansson'   
+      ]
+    });
+  });
+
+
 
   //get by id
 
