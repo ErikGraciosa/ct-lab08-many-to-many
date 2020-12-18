@@ -10,45 +10,15 @@ describe('movies routes', () => {
     return pool.query(fs.readFileSync('./data/setup.sql', 'utf-8'));
   });
 
-//   afterAll(() => {
-//     return pool.end();
-//   });
+  afterAll(() => {
+    return pool.end();
+  });
 
-  it('create a new movie via POST', async() => {
-    
-    await Promise.all([
-        {
-            first_name: 'Chris',
-            last_name: 'Hemsworth'
-        },
-        {
-            first_name: 'Robert',
-            last_name: 'Downey'
-        },
-        {
-            first_name: 'Scarlett',
-            last_name: 'Johansson'
-        }   
-    ].map(actor => Actor.insert(actor)));
-    
+  it('MOVIE: create a new movie via POST', async() => {   
     const response = await request(app)
         .post('/api/v1/movies')
         .send({
-            title: 'Avengers',
-            actors: [
-                {
-                    first_name: 'Chris',
-                    last_name: 'Hemsworth'
-                },
-                {
-                    first_name: 'Robert',
-                    last_name: 'Downey'
-                },
-                {
-                    first_name: 'Scarlett',
-                    last_name: 'Johansson'
-                }   
-            ]
+            title: 'Avengers'
         });
 
     expect(response.body).toEqual({
@@ -57,51 +27,180 @@ describe('movies routes', () => {
     });
   });
 
-  
-  //get 
+  it('MOVIE: finds a movie by id via GET', async() => {
+    await Promise.all([	
+      {	name: 'Chris Hemsworth' },	
+      {	name: 'Robert Downey Jr' },	
+      {	name: 'Scarlett Johansson'}   	
+    ].map(actor => Actor.insert(actor)));
 
-  //get by id
-
-  //put
-
-  //delete
-
-});
-
-
-describe('actors routes', () => {
-    beforeEach(() => {
-      return pool.query(fs.readFileSync('./data/setup.sql', 'utf-8'));
+    const movie = await Movie.insert({
+      title: 'Avengers',
+      actors: [	
+        'Chris Hemsworth',	
+        'Robert Downey Jr',	
+        'Scarlett Johansson'   
+      ]
     });
-  
-    afterAll(() => {
-      return pool.end();
+
+    const response = await request(app)
+      .get(`/api/v1/movies/1`);
+    
+    expect(response.body).toEqual({
+      ...movie,
+      actors: [	
+        'Chris Hemsworth',	
+        'Robert Downey Jr',	
+        'Scarlett Johansson'   
+      ]
     });
-  
-    it('create a new actor via POST', async() => {
-      const response = await request(app)
-        .post('/api/v1/actors')
-        .send({
-            first_name: 'Chris',
-            last_name: 'Hemsworth'
-        });
-  
-      expect(response.body).toEqual({
+  });
+
+  it('MOVIE: finds all movies byGET', async() => {
+    await Promise.all([	
+      {	title: 'Avengers' },	
+      {	title: 'Thor 2' },	
+      {	title: 'Iron Man 3'}   	
+    ].map(title => Movie.insert(title)));
+
+    const response = await request(app)
+      .get(`/api/v1/movies/`);
+    
+    expect(response.body).toEqual(expect.arrayContaining([	
+      {	
         id: '1',
-        first_name: 'Chris',
-        last_name: 'Hemsworth'
-      });
+        title: expect.anything() 
+      },	
+      {	
+        id: '2',
+        title: expect.anything() 
+      },	
+      {	
+        id: '3',
+        title: expect.anything()
+      }   	
+    ]));
+  });
+  
+  it('MOVIE: update a new movie via PUT', async() => {   
+    await Promise.all([	
+      {	title: 'Avengers' }  	
+    ].map(title => Movie.insert(title)));
+
+    const response = await request(app)
+        .put('/api/v1/movies/1')
+        .send({
+            title: 'The Incredible Hulk'
+        });
+
+    expect(response.body).toEqual({
+      id: '1',
+      title: 'The Incredible Hulk'
     });
-  
-    //get 
-  
-    //get by id
-  
-    //put
-  
-    //delete
-  
-  
-  
-  
+  });
+
+  it('MOVIE: delete a new movie via POST', async() => {   
+    await Promise.all([	
+      {	title: 'Avengers' },
+      { title: 'Guardians of the Galaxy' }  	
+    ].map(title => Movie.insert(title)));
+
+    const response = await request(app)
+        .delete('/api/v1/movies/1')
+        .send({
+            title: 'The Incredible Hulk'
+        });
+
+    expect(response.body).toEqual({
+      id: '1',
+      title: expect.anything()
+    });
+  });
+
+  it('ACTOR: create a new actor via POST', async() => {
+    const response = await request(app)
+      .post('/api/v1/actors')
+      .send({
+          name: 'Chris Hemsworth'
+      });
+
+    expect(response.body).toEqual({
+      id: '1',
+      name: 'Chris Hemsworth'
+    });
+  });
+
+  it('ACTOR: get a single actor by id', async() => {   
+    await Actor.insert({ name: 'Chris Hemsworth' });
+    
+    const response = await request(app)
+        .get('/api/v1/actors/1')
+
+    expect(response.body).toEqual({
+      id: '1',
+      name: 'Chris Hemsworth'
+    });
+  });
+
+  //get all
+  it('ACTOR: get all actors', async() => {   
+    await Promise.all([	
+      {	name: 'Chris Hemsworth' },	
+      {	name: 'Robert Downey Jr' },	
+      {	name: 'Scarlett Johansson'}   	
+    ].map(actor => Actor.insert(actor)));
+    
+    const response = await request(app)
+        .get('/api/v1/actors/')
+
+    expect(response.body).toEqual(expect.arrayContaining([	
+      {	
+        id: '1',
+        name: expect.anything() 
+      },	
+      {	
+        id: '2',
+        name: expect.anything() 
+      },	
+      {	
+        id: '3',
+        name: expect.anything()
+      }   	
+    ]));
+  });
+  //put
+  it('ACTOR: update an actor via PUT', async() => {   
+    await Actor.insert({ name: 'Black Widow'});
+
+    const response = await request(app)
+        .put('/api/v1/actors/1')
+        .send({
+            name: 'Natasha Romanoff'
+        });
+
+    expect(response.body).toEqual({
+      id: '1',
+      name: 'Natasha Romanoff'
+    });
+  });
+  //delete
+  it('ACTOR: delete a new movie via POST', async() => {   
+    await Actor.insert({ name: 'Black Widow'});
+
+    const response = await request(app)
+        .delete('/api/v1/actors/1')
+
+    expect(response.body).toEqual({
+      id: '1',
+      name: expect.anything()
+    });
+  });
 });
+
+
+
+  
+    
+  
+  
+  
