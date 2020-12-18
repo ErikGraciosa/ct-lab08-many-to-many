@@ -86,6 +86,23 @@ describe('movies routes', () => {
     ]));
   });
   //put
+  it('MOVIE: create a new movie via POST', async() => {   
+    await Promise.all([	
+      {	title: 'Avengers' }  	
+    ].map(title => Movie.insert(title)));
+
+    const response = await request(app)
+        .put('/api/v1/movies/1')
+        .send({
+            title: 'The Incredible Hulk'
+        });
+
+    expect(response.body).toEqual({
+      id: '1',
+      title: 'The Incredible Hulk'
+    });
+  });
+
 
   //delete
 
