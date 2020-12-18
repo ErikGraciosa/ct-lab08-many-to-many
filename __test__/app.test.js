@@ -10,26 +10,15 @@ describe('movies routes', () => {
     return pool.query(fs.readFileSync('./data/setup.sql', 'utf-8'));
   });
 
-  // afterAll(() => {
-  //   return pool.end();
-  // });
+  afterAll(() => {
+    return pool.end();
+  });
 
   it('create a new movie via POST', async() => {   
     const response = await request(app)
         .post('/api/v1/movies')
         .send({
-            title: 'Avengers',
-            actors: [
-                {
-                  name: 'Chris Hemsworth'
-                },
-                {
-                  name: 'Robert Downey'
-                },
-                {
-                  name: 'Scarlett Johansson'
-                }   
-            ]
+            title: 'Avengers'
         });
 
     expect(response.body).toEqual({
@@ -49,7 +38,7 @@ describe('movies routes', () => {
 
 
   //ACTORS TESTS 
-  it.skip('create a new actor via POST', async() => {
+  it('create a new actor via POST', async() => {
     const response = await request(app)
       .post('/api/v1/actors')
       .send({
