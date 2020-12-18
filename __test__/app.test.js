@@ -82,7 +82,7 @@ describe('movies routes', () => {
     ]));
   });
   
-  it('MOVIE: create a new movie via POST', async() => {   
+  it('MOVIE: update a new movie via PUT', async() => {   
     await Promise.all([	
       {	title: 'Avengers' }  	
     ].map(title => Movie.insert(title)));
@@ -99,7 +99,7 @@ describe('movies routes', () => {
     });
   });
 
-  it('MOVIE: create a new movie via POST', async() => {   
+  it('MOVIE: delete a new movie via POST', async() => {   
     await Promise.all([	
       {	title: 'Avengers' },
       { title: 'Guardians of the Galaxy' }  	
@@ -169,9 +169,32 @@ describe('movies routes', () => {
     ]));
   });
   //put
+  it('ACTOR: update an actor via PUT', async() => {   
+    await Actor.insert({ name: 'Black Widow'});
 
+    const response = await request(app)
+        .put('/api/v1/actors/1')
+        .send({
+            name: 'Natasha Romanoff'
+        });
+
+    expect(response.body).toEqual({
+      id: '1',
+      name: 'Natasha Romanoff'
+    });
+  });
   //delete
+  it('ACTOR: delete a new movie via POST', async() => {   
+    await Actor.insert({ name: 'Black Widow'});
 
+    const response = await request(app)
+        .delete('/api/v1/actors/1')
+
+    expect(response.body).toEqual({
+      id: '1',
+      name: expect.anything()
+    });
+  });
 });
 
 
