@@ -130,10 +130,44 @@ describe('movies routes', () => {
     });
   });
 
-  //get 
-  
-  //get all
+  it('ACTOR: get a single actor by id', async() => {   
+    await Actor.insert({ name: 'Chris Hemsworth' });
+    
+    const response = await request(app)
+        .get('/api/v1/actors/1')
 
+    expect(response.body).toEqual({
+      id: '1',
+      name: 'Chris Hemsworth'
+    });
+  });
+
+  //get all
+  it('ACTOR: get all actors', async() => {   
+    await Promise.all([	
+      {	name: 'Chris Hemsworth' },	
+      {	name: 'Robert Downey Jr' },	
+      {	name: 'Scarlett Johansson'}   	
+    ].map(actor => Actor.insert(actor)));
+    
+    const response = await request(app)
+        .get('/api/v1/actors/')
+
+    expect(response.body).toEqual(expect.arrayContaining([	
+      {	
+        id: '1',
+        name: expect.anything() 
+      },	
+      {	
+        id: '2',
+        name: expect.anything() 
+      },	
+      {	
+        id: '3',
+        name: expect.anything()
+      }   	
+    ]));
+  });
   //put
 
   //delete
